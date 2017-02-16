@@ -34,13 +34,11 @@ public class FaberlicGoods extends Application{
 		// This is for assigning value into table
 		fabDao = new FabDao();
 		
-		
 		Label label = new Label("Enter article");
 		TextField textField = new TextField();
 
 		Button btn = new Button();
 		btn.setText("Search");
-
 
 		HBox hBox = new HBox();
 		hBox.setPadding(new Insets(10, 10, 10, 10));
@@ -48,13 +46,11 @@ public class FaberlicGoods extends Application{
 		hBox.setAlignment(Pos.TOP_CENTER);
 		hBox.getChildren().addAll(label, textField, btn);
 
-
 		BorderPane root = new BorderPane();
 		root.setTop(hBox);
 
 		TableView<Goods> tableView = new TableView<Goods>(); //table.setItems(teamMembers);
 		
-
 		TableColumn<Goods, String> discountTC = new TableColumn<Goods, String>("discount");
 		discountTC.setCellValueFactory(new PropertyValueFactory<>("discount"));
 		discountTC.setMinWidth(180);
@@ -132,7 +128,6 @@ public class FaberlicGoods extends Application{
 			
 			ObservableList<Goods> goods = FXCollections.observableArrayList(listGoods);
 			tableView.setItems(goods);
-			
 			
 //			if(ballBuyerTC.isVisible()){
 //				ballBuyerTC.setVisible(false);

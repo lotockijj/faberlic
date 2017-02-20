@@ -3,12 +3,12 @@ package com.faberlic;
 import java.math.BigDecimal;
 
 public class Goods {
-	
+
 	String discount;
 	String page;
 	String article;
 	String name;
-	
+
 	BigDecimal priceCatalog;
 	BigDecimal theSame;
 	String allowance;
@@ -16,10 +16,10 @@ public class Goods {
 	float ballConsultant;
 	BigDecimal priceBuyer;
 	float ballBuyer;
-	
+
 	public Goods(){
 	}
-	
+
 	public Goods(String discount, String page, String article, String name, 
 			BigDecimal priceCatalog, BigDecimal theSame, String allowance, 
 			BigDecimal priceStore, float ballConsultant, BigDecimal priceBuyer, 
@@ -131,6 +131,11 @@ public class Goods {
 				+ " " + priceCatalog + " " + theSame + " " + allowance
 				+ " " + priceStore +   " " + ballConsultant + " " + priceBuyer
 				+ " " + ballBuyer;
+	}
+
+	public static String[] getNamesGoods(){
+		return new String[]{"discount", "page", "article", "name", "price catalog", "the same",
+				"allowance", "price store", "ball consultant", "price buyer", "ball buyer"};				
 	}
 
 }

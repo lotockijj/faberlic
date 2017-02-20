@@ -14,6 +14,8 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import gui.AlertGui;
+
 // Completely work for first discount!!!
 
 public class JoinNext {
@@ -35,7 +37,7 @@ public class JoinNext {
 			}
 			scanner.close();
 		} catch(Exception e){
-			e.printStackTrace();
+			AlertGui.createAlertError(e);
 		}
 	}
 
@@ -51,7 +53,7 @@ public class JoinNext {
 			}
 			scanner.close();
 		} catch(Exception e){
-			e.printStackTrace();
+			AlertGui.createAlertError(e);
 		}
 	}
 
@@ -180,7 +182,7 @@ public class JoinNext {
 				stmt.executeUpdate();
 			}
 		} catch(Exception e){
-			e.printStackTrace();
+			AlertGui.createAlertError(e);
 		}
 	}
 }

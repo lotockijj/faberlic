@@ -1,6 +1,5 @@
 package gui;
 
-import javafx.application.Application;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -22,37 +21,60 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.derby.impl.sql.execute.CreateConstraintConstantAction;
 
 import com.dao.FabDao;
 import com.faberlic.Goods;
 
 // for testing fabDao = null;
-public class FaberlicGoods extends Application{
+public class FaberlicGoods extends Stage{
 
 	FabDao fabDao;
 	TableView<Goods> tableView;
 	ObservableList<Goods> goods;
 	int selectedId;
+	User user; 
 
-	public void startApplication(Stage primaryStage) throws Exception {
+	public FaberlicGoods(User user) throws Exception {
 		fabDao = new FabDao();
+		this.user = user;
 
+		Button buttonShowAuditHistory = new Button("Show audit history");
+		Label labelNameUser = new Label();
+		labelNameUser.setText(user.getFirst_name() + " " + user.getLast_name() + " ");
+		Button buttonShowUsers = new Button("Show all users");
 		Label label = new Label("Enter article");
 		TextField textField = new TextField();
 
-		Button btn = new Button();
-		btn.setText("Search");
+		Button btnSearch = new Button();
+		btnSearch.setText("Search");
 
 		HBox hBox = new HBox();
 		hBox.setPadding(new Insets(10, 10, 10, 10));
 		hBox.setSpacing(10);
 		hBox.setAlignment(Pos.TOP_CENTER);
-		hBox.getChildren().addAll(label, textField, btn);
+		hBox.getChildren().addAll(labelNameUser, buttonShowUsers, label, textField, btnSearch,
+				buttonShowAuditHistory);
+		buttonShowAuditHistory.setOnAction(e -> {
+			try {
+				new TableAuditHistory();
+			} catch (Exception e1) {
+				AlertGui.createAlertError(e1);
+			}
+		});
+		buttonShowUsers.setOnAction(e -> {
+			try {
+				new FaberlicUsers();
+			} catch (Exception e1) {
+				AlertGui.createAlertError(e1);
+			}	
+		});
 
 		BorderPane root = new BorderPane();
 		root.setTop(hBox);
@@ -128,14 +150,14 @@ public class FaberlicGoods extends Application{
 		bottomPannel.getChildren().addAll(btnAddGoods, btnUpdateGoods, btnDeleteGoods);
 		root.setBottom(bottomPannel);
 		btnAddGoods.setOnAction(e -> {
-			AddDialogFX addDialogFX = new AddDialogFX(FaberlicGoods.this, fabDao, null, false);
+			AddDialogFX addDialogFX = new AddDialogFX(FaberlicGoods.this, fabDao, null, false, user);
 			addDialogFX.show();
 		});
 		btnUpdateGoods.setOnAction(e ->{
 			try{
 				Goods selectedGoods = tableView.getSelectionModel().getSelectedItem();
 				selectedId = tableView.getSelectionModel().getSelectedIndex() + 1;
-				AddDialogFX addDialogFX = new AddDialogFX(FaberlicGoods.this, fabDao, selectedGoods, true);
+				AddDialogFX addDialogFX = new AddDialogFX(FaberlicGoods.this, fabDao, selectedGoods, true, user);
 				addDialogFX.show();
 			} catch (NullPointerException exc){
 				AlertGui.createAlertError(exc);
@@ -149,7 +171,7 @@ public class FaberlicGoods extends Application{
 				alert.setContentText("Are you sure you want delete goods id " + selectedId);
 				Optional<ButtonType> result = alert.showAndWait();
 				if ((result.isPresent()) && (result.get() == ButtonType.OK)) {
-					fabDao.deleteGoods(selectedId);
+					fabDao.deleteGoods(selectedId, user);
 				} 
 				this.refreshFaberlicGoods();
 			} catch (Exception exc){
@@ -160,11 +182,11 @@ public class FaberlicGoods extends Application{
 		root.setCenter(vBox);
 		Scene scene = new Scene(root, 1300, 450);
 
-		primaryStage.setTitle("Goods search application.");
-		primaryStage.setScene(scene);
-		primaryStage.show();
+		this.setTitle("Goods search application.");
+		this.setScene(scene);
+		this.show();
 
-		btn.setOnAction(e -> {
+		btnSearch.setOnAction(e -> {
 			List<Goods> listGoods = null;
 			String searchingName = textField.getText();
 			if(searchingName != null && searchingName.trim().length() > 0){
@@ -194,10 +216,6 @@ public class FaberlicGoods extends Application{
 		});
 	}
 
-	public static void main(String[] args) {
-		launch(args);
-	}
-
 	public void refreshFaberlicGoods() {
 		try {
 			List<Goods> listGoods = fabDao.getAllGoods();
@@ -208,8 +226,4 @@ public class FaberlicGoods extends Application{
 		}
 	}
 
-	@Override
-	public void start(Stage primaryStage) throws Exception {
-		startApplication(primaryStage);
-	}
 }
